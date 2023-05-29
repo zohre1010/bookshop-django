@@ -31,13 +31,19 @@
                         <div class="pa-prod-content">
                             <div class="pa-prod-count">
                                 <div class="pa-cart-quantity">
-                                    
-                                    <form action="{% url 'eshop_order:cart_add' product.id %}" method="post">
+                                    {% comment %} {% if request.user.is_authenticated %} {% endcomment %}
+                                     <form action="{% url 'eshop_order:cart_add' product.id %}" method="post">
                                         {% csrf_token %}
-                                        {{ form }}
+                                        {{ form.as_p }}
                                         <input type="submit" class="pa-btn" value="افزودن به سبد خرید">
                                     </form>
-                                   
+                                    {% comment %} {% else %}
+                                    <form action="{% url 'eshop_accounts:user_login'%}" method="post">
+                                        {% csrf_token %}
+                                        {{ form.as_p }}
+                                        <input type="submit" class="pa-btn" value="افزودن به سبد خرید">
+                                    </form> 
+                                   {% endif %}{% endcomment %}
                                 </div>
                                
                             </div>
@@ -46,7 +52,7 @@
                     </div>
                 </div>
                 <!-- product start -->
-                {% comment %} <div class="pa-related-product">
+               <div class="pa-related-product">
                     <div class="container">
                         <div class="pa-heading">
                             <h1>محصولات مرتبط</h1>
@@ -277,76 +283,23 @@
                             </div>
                         </div>
                     </div>
-                </div> {% endcomment %}
+                </div> 
                 <!-- product end -->
             </div>
-            {% comment %} <div class="col-lg-4">
+            <div class="col-lg-4">
                 <div class="pa-product-sidebar">
-                    <div class="pa-widget pa-search">
-                        <input type="text" placeholder="جستجوی محصول">
-                        <button class="pa-btn">جستجو</button>
-                    </div>
                     <div class="pa-widget pa-shop-category">
-                        <h2 class="pa-sidebar-title">دسته ها </h2>
+                        <h2  class="liblue">دسته بندی ها </h2>
                         <ul>
-                            <li><a href="javascript:;"> محصولات برتر<span>4</span></a></li>
-                            <li><a href="javascript:;"> جدیدترین محصولات<span>5</span></a></li>
-                            <li><a href="javascript:;"> روند جدید<span>6</span></a></li>
-                            <li><a href="javascript:;"> تازه واردان <span>2</span></a></li>
-                            <li><a href="javascript:;"> اخیراً اضافه شده است <span>9</span></a></li>
+                             <li  class="liblue"><a href="{% url 'eshop_products:product_list'  %}"> همه ی کتاب ها </a></li>
+                             {% for cat in category_parent%}
+                            <li  class="liblue"><a href="{% url 'eshop_products:category_filter' cat.slug %}">  {{cat.name}}</a></li>
+                            {% endfor %}
                         </ul>
                     </div>
-                    <div class="pa-widget pa-product-widget">
-                        <h2 class="pa-sidebar-title">غرفه های برتر </h2>
-                        <ul>
-                            <li>
-                                <div class="pa-pro-wid-img">
-                                    <img src="assets/images/product-wid1.png" alt="image" class="img-fluid" />
-                                </div>
-                                <div class="pa-pro-wid-content">
-                                    <h4><a href="javascript:;">چای ارگانیک سیاه</a></h4>
-                                    <p>با کمترین هزینه برای انجام تمرینات ورزشی ، امتحان کنید</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="pa-pro-wid-img">
-                                    <img src="assets/images/product-wid2.png" alt="image" class="img-fluid" />
-                                </div>
-                                <div class="pa-pro-wid-content">
-                                    <h4><a href="javascript:;">چای برگ شل</a></h4>
-                                    <p>حداقل استفاده از ورزش در ورزش را انجام دهید</p>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="pa-pro-wid-img">
-                                    <img src="assets/images/product-wid3.png" alt="image" class="img-fluid" />
-                                </div>
-                                <div class="pa-pro-wid-content">
-                                    <h4><a href="javascript:;">چای سبز</a></h4>
-                                    <p>حداقل استفاده از ورزش در ورزش را انجام دهید</p>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="pa-widget pa-tag">
-                        <h2 class="pa-sidebar-title">ابرها را برچسب بزنید</h2>
-                        <ul>
-                            <li><a href="javascript:;"> محصول </a></li>
-                            <li><a href="javascript:;"> آیورودا </a></li>
-                            <li><a href="javascript:;"> خالص </a></li>
-                            <li><a href="javascript:;"> پرطرفدار </a></li>
-                            <li><a href="javascript:;"> گیاهی </a></li>
-                            <li><a href="javascript:;"> سالم </a></li>
-                            <li><a href="javascript:;"> محصول </a></li>
-                            <li><a href="javascript:;"> آیورودا </a></li>
-                            <li><a href="javascript:;"> پرطرفدار </a></li>
-                            <li><a href="javascript:;"> خالص </a></li>
-                            <li><a href="javascript:;"> گیاهی </a></li>
-                            <li><a href="javascript:;"> سالم </a></li>
-                        </ul>
-                    </div>
+                    
                 </div>
-            </div> {% endcomment %}
+            </div>
         </div>
     </div>
 </div>

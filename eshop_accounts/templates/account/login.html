@@ -1,0 +1,85 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load static %}
+{% block content %}
+
+ <!-- breadcrumb-area start -->
+ <div class="breadcrumb-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <!-- breadcrumb-list start -->
+                <ul class="breadcrumb-list">
+                    <li class="breadcrumb-item"><a href="/">صفحه اصلی</a></li>
+                    <li class="breadcrumb-item active">ورود - ثبت نام</li>
+                </ul>
+                <!-- breadcrumb-list end -->
+            </div>
+        </div>
+    </div>
+ </div>
+        <!-- breadcrumb-area end -->
+
+
+
+        <!-- main-content-wrap start -->
+<div class="main-content-wrap section-ptb lagin-and-register-page">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-7 col-md-12 ml-auto mr-auto">
+                <div class="login-register-wrapper">
+                <!-- login-register-tab-list start -->
+                    <div class="login-register-tab-list nav">
+                                <a href="{% url 'eshop_accounts:user_login' %}">
+                                <h4> ورود - </h4>
+                                </a>
+                                <br/>
+                                <a  href="{% url 'eshop_accounts:user_register' %}">
+                                <h4> ثبت نام </h4>
+                                </a>
+                            </div>
+                            <!-- login-register-tab-list end -->
+                    <div class="tab-content">
+                        <div id="lg1" class="tab-pane active">
+                            <div class="login-form-container">
+                                <div class="login-register-form">
+                                    <form method="post" >
+                                        <div class="login-input-box">
+                                            {%csrf_token%}
+                                            {% comment %} {{login_form}} {% endcomment %}
+                                            <br/>
+                                            {{form.username}}
+                                            {%for error in form.username.errors%}
+                                                <p style = "color : red;">{{error}}</p>
+                                            {% endfor %}
+                                            <br/>
+                                            <br/>
+                                            
+
+
+
+
+                                            {{form.password}}
+                                            {%for error in form.password.errors%}
+                                                <p style = "coloe : red;">{{error}}</p>
+                                            {% endfor %}
+                                        </div>
+                                        <div class="button-box">
+                                            
+                                            <div class="button-box">
+                                                  <button class="btn btn-primary mt-4" type="submit"><span>ورود</span></button>
+                                            </div>
+                                            <br/>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- main-content-wrap end -->
+  
+{% endblock content %}

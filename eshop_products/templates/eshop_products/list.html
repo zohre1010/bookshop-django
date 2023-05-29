@@ -4,7 +4,8 @@
 {% block title %} محصولات{% endblock %}
 {% load render_partial %}
 {% block content %}
-
+</br>
+<br>
 <!-- breadcrumb end -->
 <!-- product start -->
 <!-- product end -->
@@ -15,10 +16,16 @@
             </br>
         </div>
         <div class="row">
-            {% for product in products %}
+            {% for product in page_obj %}
             {% include 'eshop_products/products_item_component.html' with product=product %}
             {% endfor %}
-            <ul class="pagination">
+        </br>
+
+   
+           
+        </div>
+             <div class="pa-blog-view">
+                                   <ul class="pagination">
                 {% if page_obj.has_previous %}
                 <li><a href="?page={{ page_obj.previous_page_number }}">قبلی</a></li>
                 {% endif %}
@@ -33,7 +40,7 @@
                 <li><a href="?page={{ page_obj.next_page_number }}">بعدی</a></li>
                 {% endif %}
             </ul>
-        </div>
+                                </div>
     </div>
 </div>
 <!-- product end -->

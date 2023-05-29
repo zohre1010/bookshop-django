@@ -55,8 +55,6 @@ class OrderCreateView(LoginRequiredMixin, View):
 			OrderItem.objects.create(order=order, product=item['product'], price=item['price'], quantity=item['quantity'])
 		cart.clear()
 		return redirect('eshop_order:order_detail', order.id)
-
-
 MERCHANT = '52ffbd56-ea92-45ba-bbe1-c866f95a0580'
 ZP_API_REQUEST = "https://api.zarinpal.com/pg/v4/payment/request.json"
 ZP_API_VERIFY = "https://api.zarinpal.com/pg/v4/payment/verify.json"
@@ -72,15 +70,14 @@ class OrderPayView(LoginRequiredMixin, View):
 		}
 		req_data = {
 			"merchant_id": MERCHANT,
-			"amount": order.get_total_price(),
+			"amount": order.get_price() *10,
 			"callback_url": CallbackURL,
 			"description": description,
-			"metadata": {"mobile": request.user.phone_number, "email": request.user.email}
+			"metadata": { "email": request.user.email}
 		}
 		req_header = {"accept": "application/json",
 					  "content-type": "application/json'"}
-		req = requests.post(url=ZP_API_REQUEST, data=json.dumps(
-			req_data), headers=req_header)
+		req = requests.post(url=ZP_API_REQUEST, data=json.dumps(req_data), headers=req_header)
 		authority = req.json()['data']['authority']
 		if len(req.json()['errors']) == 0:
 			return redirect(ZP_API_STARTPAY.format(authority=authority))

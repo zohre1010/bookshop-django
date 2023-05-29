@@ -22,13 +22,15 @@ from . import views
 
 urlpatterns = [
     path('', views.HomeView.as_view(), name='home'),
+    path('ckeditor/', include('ckeditor_uploader.urls')),
     path('products/',include('eshop_products.urls', namespace='eshop_products')),
-    path('accounts/',include('eshop_accounts.urls', namespace='eshop_accounts')),
+    path('',include('eshop_accounts.urls', namespace='eshop_accounts')),
+    path('blog/',include('eshop_blog.urls', namespace='eshop_blog')),
     path('orders/',include('eshop_order.urls', namespace='eshop_order')),
     path('header',views.Header.as_view(), name='header'),
     path('menu/', views.Header.as_view(), name='menu'),
     path('footer',views.footer, name='footer'),
-    path('', include('eshop_contact.urls')),
+    path('', include('eshop_contact.urls',namespace='eshop_contact')),
     path('about-us/', views.about_page),
     path('admin/', admin.site.urls),
     path('ratings/', include('star_ratings.urls', namespace='ratings')),  

@@ -37,21 +37,48 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'jalali_date',
     # Local apps
     'eshop_products',
     'eshop_accounts',
     'eshop_order',
-    'eshop_menu',
     'eshop_slider',
     'eshop_contact',
     'eshop_settings',
     # Third-party apps
-    'django_celery_beat',
     'ckeditor',
+    'ckeditor_uploader',
     'django_render_partial',
-    'star_ratings'
+    'star_ratings',
+    'eshop_blog'
     
 ]
+
+
+JALALI_DATE_DEFAULTS = {
+   'Strftime': {
+        'date': '%y/%m/%d',
+        'datetime': '%H:%M:%S _ %y/%m/%d',
+    },
+    'Static': {
+        'js': [
+            # loading datepicker
+            'admin/js/django_jalali.min.js',
+            # OR
+            # 'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.core.js',
+            # 'admin/jquery.ui.datepicker.jalali/scripts/calendar.js',
+            # 'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc.js',
+            # 'admin/jquery.ui.datepicker.jalali/scripts/jquery.ui.datepicker-cc-fa.js',
+            # 'admin/js/main.js',
+        ],
+        'css': {
+            'all': [
+                'admin/jquery.ui.datepicker.jalali/themes/base/jquery-ui.min.css',
+            ]
+        }
+    },
+}
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -119,7 +146,10 @@ AUTH_PASSWORD_VALIDATORS = [
 # Internationalization
 # https://docs.djangoproject.com/en/4.1/topics/i18n/
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'fa'
+
+import locale
+locale.setlocale(locale.LC_ALL, "fa_IR.UTF-8")
 
 TIME_ZONE = 'UTC'
 
@@ -127,7 +157,9 @@ USE_I18N = True
 
 USE_TZ = True
 
-AUTH_USER_MODEL = 'eshop_accounts.User'
+
+AUTH_USER_MODEL ='eshop_accounts.User'
+
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
@@ -142,6 +174,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn", "static_root")
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, "static_cdn", "media_root")
+
+CKEDITOR_UPLOAD_PATH = os.path.join(MEDIA_ROOT)
+CKEDITOR_JQUERY_URL = '//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js'
+CKEDITOR_RESTRICT_BY_USER = True
+CKEDITOR_MEDIA_PREFIX = "/media/ckeditor/"
+CKEDITOR_UPLOAD_PREFIX = "http://fortezzeimperiali/media/uploads/"
+CKEDITOR_RESTRICT_BY_USER = True
+CKEDITOR_IMAGE_BACKEND = "pillow"
 
 
 # Default primary key field type

@@ -1,11 +1,12 @@
 from django.shortcuts import render
 from django.views import View
-from eshop_menu.models import Menu
+
 from eshop_slider.models import Slider
 from eshop_products.models import Product, Category
-from eshop_menu.models import Menu
+
 import itertools
 from eshop_settings.models import SiteSetting
+from eshop_blog.models import Blog
 
 
 def my_grouper(n, iterable):
@@ -16,24 +17,27 @@ def my_grouper(n, iterable):
 class HomeView(View):
 	def get(self, request):
 		sliders = Slider.objects.all()
+		blogs=Blog.objects.order_by('-id').all()[:3]
 		most_visit_products = Product.objects.order_by('-visit_count').all()[:6]
 		latest_products = Product.objects.order_by('-id').all()[:3]
-		menus = Menu.objects.filter(is_sub=False)
+		
 		context = {
         'sliders': sliders,
         'most_visit': my_grouper(2, most_visit_products),
         'latest_products': my_grouper(1, latest_products),
-		 'menus':menus,
+		
+		 'blogs':my_grouper(1, blogs),
     }   
 
 		return render(request, 'home_page.html', context)
 class Header(View):
 	def get(self, request):
-		menus = Menu.objects.filter(is_sub=False)
+		# menus = Menu.objects.filter(is_sub=False)
 		site_setting = SiteSetting.objects.first()
+		category_parent=Category.objects.filter(is_sub=False)
 		context = {
         'setting': site_setting,
-		'menus':menus
+		'category_parent':category_parent
 		}
 
 			
@@ -42,10 +46,10 @@ class Header(View):
 # footer code behind
 def footer(request, *args, **kwargs):
 	site_setting = SiteSetting.objects.first()
-	menus = Menu.objects.filter(is_sub=False)
+	category_parent=Category.objects.filter(is_sub=False)
 	context = {
         'setting': site_setting,
-		'menus':menus
+		'category_parent':category_parent	
     }
 	return render(request, 'shared/Footer.html',context)
 

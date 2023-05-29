@@ -1,70 +1,96 @@
+
 from django import forms
-from .models import User, OtpCode
-from django.core.exceptions import ValidationError
-from django.contrib.auth.forms import ReadOnlyPasswordHashField
 from django.core import validators
+from eshop_accounts.models import User
 
 
-class UserCreationForm(forms.ModelForm):
-	password1 = forms.CharField(label='password', widget=forms.PasswordInput)
-	password2 = forms.CharField(label='confirm password', widget=forms.PasswordInput)
+class EditUserForm(forms.Form):
+    first_name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'لطفا نام خود را وارد نمایید', 'class': 'form-control'}),
+        label='نام'
+    )
 
-	class Meta:
-		model = User
-		fields = ('email', 'phone_number', 'full_name')
-
-	def clean_password2(self):
-		cd = self.cleaned_data
-		if cd['password1'] and cd['password2'] and cd['password1'] != cd['password2']:
-			raise ValidationError('passwords dont match')
-		return cd['password2']
-
-	def save(self, commit=True):
-		user = super().save(commit=False)
-		user.set_password(self.cleaned_data['password1'])
-		if commit:
-			user.save()
-		return user
+    last_name = forms.CharField(
+        widget=forms.TextInput(attrs={'placeholder': 'لطفا نام خانوادگی خود را وارد نمایید', 'class': 'form-control'}),
+        label='نام خانوادگی'
+    )
 
 
-class UserChangeForm(forms.ModelForm):
-	password = ReadOnlyPasswordHashField(help_text="you can change password using <a href=\"../password/\">this form</a>.")
+class LoginForm(forms.Form):
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'نام کاربری'}), label='نام کاربری')
 
-	class Meta:
-		model = User
-		fields = ('email', 'phone_number', 'full_name', 'password', 'last_login')
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'لطفا کلمه عبور خود را وارد نمایید'}),
+        label='کلمه ی عبور'
+    )
 
+    # def clean_username(self):
+    #     username = self.cleaned_data.get('username')
+    #     is_exists_user = User.objects.filter(username=username).exists()
+    #     if not is_exists_user:
+    #         raise forms.ValidationError('کاربری با مشخصات وارد شده ثبت نام نکرده است')
 
-class UserRegistrationForm(forms.Form):
-	email = forms.EmailField( widget=forms.TextInput(),
+    #     return username
+
+class RegistrationForm(forms.Form):
+    username = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
+        label='نام کاربری',
+        validators=[
+            validators.MaxLengthValidator(limit_value=20,
+                                          message='تعداد کاراکترهای وارد شده نمیتواند بیشتر از 20 باشد'),
+            validators.MinLengthValidator(3, 'تعداد کاراکترهای وارد شده نمیتواند کمتر از 8 باشد')
+        ]
+    )
+
+    email = forms.CharField(
+        widget=forms.TextInput(attrs={'class': 'form-control'}),
         label='ایمیل',
         validators=[
             validators.EmailValidator('ایمیل وارد شده معتبر نمیباشد')
-        ])
-	full_name = forms.CharField(widget=forms.TextInput(), label='نام کاربری')
-	phone = forms.CharField(max_length=11,widget=forms.TextInput(), label=' شماره تلفن')
-	password = forms.CharField(widget=forms.PasswordInput(), label='  رمز عبور')
+        ]
+    )
 
-	def clean_email(self):
-		email = self.cleaned_data['email']
-		user = User.objects.filter(email=email).exists()
-		if user:
-			raise ValidationError('This email already exists')
-		return email
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='کلمه ی عبور'
+    )
 
-	def clean_phone(self):
-		phone = self.cleaned_data['phone']
-		user = User.objects.filter(phone_number=phone).exists()
-		if user:
-			raise ValidationError('This phone number already exists')
-		OtpCode.objects.filter(phone_number=phone).delete()
-		return phone
+    confirm_password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'class': 'form-control'}),
+        label='تکرار کلمه ی عبور'
+    )
+
+    def clean_email(self):
+        email = self.cleaned_data.get('email')
+        is_exists_user_by_email = User.objects.filter(email=email).exists()
+        if is_exists_user_by_email:
+            raise forms.ValidationError('ایمیل وارد شده تکراری میباشد')
+
+        if len(email) > 30:
+            raise forms.ValidationError('تعداد کاراکترهای ایمیل باید کمتر از 30 باشد')
+
+        return email
+
+    def clean_user_name(self):
+        username = self.cleaned_data.get('username')
+        is_exists_user_by_username = User.objects.filter(username=username).exists()
+
+        if is_exists_user_by_username:
+            raise forms.ValidationError('این کاربر قبلا ثبت نام کرده است')
+
+        return username
+
+    def clean_re_password(self):
+        password = self.cleaned_data.get('password')
+        re_password = self.cleaned_data.get('re_password')
+        print(password)
+        print(re_password)
+
+        if password != re_password:
+            raise forms.ValidationError('کلمه های عبور مغایرت دارند')
+
+        return password
 
 
-class VerifyCodeForm(forms.Form):
-	code = forms.IntegerField()
 
-
-class UserLoginForm(forms.Form):
-	phone = forms.CharField(max_length=11,widget=forms.TextInput(), label=' شماره تلفن')
-	password = forms.CharField(widget=forms.PasswordInput, label='  رمز عبور')

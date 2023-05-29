@@ -1,0 +1,37 @@
+{% extends 'shared/_MainLayout.html' %}
+{% load render_partial %} 
+{% block content %}
+<div class="main-content-wrap section-ptb">
+            <div class="container">
+                <div class="row">
+                    <div class="col-12">
+                        <form action="#" class="cart-table">
+                            <div class=" table-content table-responsive">
+                                <table class="table" style="width: 1100px;height: 100px">
+                                    <thead>
+                                    <tr>
+                                        <th class="plantmore-product-thumbnail">تصویر محصول</th>
+                                        <th class="cart-product-name">نام محصول</th>
+                                        <th class="plantmore-product-price">قیمت محصول</th>
+                                        <th class="plantmore-product-price">حذف محصول</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                   {% for product in new %} 
+                                    <tr>
+                                        <td class="plantmore-product-thumbnail"><a href="{{ product.get_absolute_url }}">
+                                        <img src={{product.image.url}} alt="" style="width: 100px;height: 100px"></a></td>
+                                        <td class="plantmore-product-name"><a href="{{ product.get_absolute_url }}">{{product.title}}</a></td>
+                                        <td class="plantmore-product-price"><span class="amount">{{product.price}} تومان</span></td>
+                                        <td class="plantmore-product-remove"><a href="/accounts/favorite/{{product.id}}"><i class="icon-x"></i></a></td> 
+                                    </tr>
+                                    {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock %}

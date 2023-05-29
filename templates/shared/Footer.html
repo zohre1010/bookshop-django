@@ -1,35 +1,48 @@
  {% load static %}
  <div class="pa-footer">
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-3 col-md-6">
-                <div class="pa-foot-box">
-                    <ul>
-                       {% for menu in menus  %}
-                            <li><a href="{{menu.link}}"> {{menu.name}}</a></li>
+     <div class="container">
+         <div class="row">
+             <div class="col-lg-3 col-md-6">
+                 <div class="pa-foot-box">
+                     <ul>
+                         <li>
+                             <a href="{% url 'eshop_products:product_list'  %}"> لیست کتاب ها</a>
+                         </li>
+                         {% for cat in category_parent%}
+                         <li class="pa-menu-tow-child"><a href="{% url 'eshop_products:category_filter' cat.slug %}">
+                                 {{cat.name}} </a>
+                             <ul class="pa-submenu-two">
+                                 {% for category in cat.scategory.all %}
+                                 <li>
+                                     <a href="{% url 'eshop_products:category_filter' category.slug %}">
+                                         {{category.name}}</a>
+                                 </li>
+                                 {% endfor %}
+                             </ul>
+
+                         </li>
                          {% endfor %}
-                    </ul>
+                         <li><a href="/about-us/"> درباره ی ما </a></li>
+                         <li><a href="/contact-us/"> تماس با ما </a></li>
+                 </div>
+             </div>
+             <div class="col-lg-5 col-md-6">
+                 <div class="pa-foot-box">
+
+                     <ul>
+                         <li>
+                             <a href="javascript:;">درباره ما</a>
+                             <a href="javascript:;">{{setting.about_us|safe}} </a>
+                         </li>
+
+                     </ul>
+                 </div>
+             </div>
+             <div class="col-lg-2 col-md-6">
+                <div class="logo_footer">
+                 <img src="{{setting.logo_image.url}}" alt="image" class="img-fluid" />
                 </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="pa-foot-box">
-                    
-                    <ul>
-                        <li>
-                            <a href="javascript:;">درباره ما</a>
-                            <a href="javascript:;">{{setting.about_us|safe}} </a>
-                        </li>
-                        
-                    </ul>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6">
-                <div class="pa-foot-box pa-foot-subscribe">
-                    <img src="{{setting.logo_image.url}}" alt="image" class="img-fluid"/>
-                    
-                    <p></p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+             </div>
+         </div>
+     </div>
+ </div>

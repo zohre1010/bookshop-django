@@ -1,11 +1,14 @@
 from django.urls import path
-from . import views
+from .views import user_account_main_page, edit_user_profile,favorite_product,favorite,signin,signout,signup
 
-
-app_name = 'eshop_accounts'
+app_name = 'eshop_accounts' 
 urlpatterns = [
-	path('register/', views.UserRegisterView.as_view(), name='user_register'),
-	path('verify/', views.UserRegisterVerifyCodeView.as_view(), name='verify_code'),
-	path('login/', views.UserLoginView.as_view(), name='user_login'),
-	path('logout/', views.UserLogoutView.as_view(), name='user_logout'),
-]
+    path('login/', signin, name='user_login'),
+    path('register/', signup, name='user_register'),
+    path('logout/', signout, name='user_logout'),
+    path('user/', user_account_main_page,name='user'),
+    path('user/edit', edit_user_profile,name='user_edit'),
+    path('favorite/<int:productId>/', favorite_product, name='favorite'),
+    path('favorites/',favorite,name='favorites')
+    
+    ]

@@ -1,10 +1,10 @@
 {% extends 'shared/_MainLayout.html' %} {% load static %} 
 {% block title %} تماس با ما{% endblock %}
 {% block content %}
-<div class="pa-contact spacer-top">
+{% comment %} <div class="pa-contact spacer-top">
   <div class="container">
       <div class="row">          
-          <div class="col-lg-12">
+          <div class="col-lg-6">
               <div class="pa-contact-form">
                   <form  method="POST" action="">
                     {% csrf_token %}
@@ -36,7 +36,62 @@
           </div>
       </div>
   </div>
-</div>
+</div> {% endcomment %}
+
+<div class="pa-breadcrumb">
+        <div class="container-fluid">
+            <div class="pa-breadcrumb-box">
+                <h1>با ما تماس بگیرید</h1>
+                <ul>
+                    <li><a href="/">صفحه اصلی</a></li>
+                    <li>با ما تماس بگیرید</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <!-- breadcrumb end -->
+    <!-- contact start -->
+    <div class="pa-contact spacer-top">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-7">
+                    <div class="pa-contact-map">
+                     <div class="mapouter"><div class="gmap_canvas"><iframe width="600" height="487" id="gmap_canvas" src="https://maps.google.com/maps?q=%DB%8C%D8%B2%D8%AF&t=&z=13&ie=UTF8&iwloc=&output=embed" frameborder="0" scrolling="no" marginheight="0" marginwidth="0"></iframe><a href="https://123movies-to.org"></a><br><style>.mapouter{position:relative;text-align:right;height:487px;width:600px;}</style><a href="https://www.embedgooglemap.net">how to embed google map in website</a><style>.gmap_canvas {overflow:hidden;background:none!important;height:487px;width:600px;}</style></div></div>
+                    </div>
+                </div>
+                <div class="col-md-5">
+                    <div class="pa-contact-form">
+                        <form  method="POST" action="">
+                    {% csrf_token %}
+                    <label> نام و نام خانوادگی</label>
+                    {{ contact_form.full_name }} 
+                    {% for error in contact_form.full_name.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                    <label> ایمیل</label>
+                    {{ contact_form.email }} 
+                    {% for error in contact_form.email.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                    <label>عنوان</label>
+                    {{ contact_form.subject }}
+                     {% for error in contact_form.subject.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+                    <label>متن پیام</label>
+                    {{ contact_form.text }}
+                     {% for error in contact_form.text.errors %}
+                    <p class="text-danger">{{ error }}</p>
+                    {% endfor %}
+
+                    <button class="pa-btn submitForm" type="submit">ارسال</button>
+                      <div class="response"></div>
+                  </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 <!-- contact end -->
 <!-- contact detail start -->
 <div class="pa-contact-detail">

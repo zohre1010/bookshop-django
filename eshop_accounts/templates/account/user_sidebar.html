@@ -1,0 +1,47 @@
+{% load static %}
+<div class="pa-product-single spacer-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="pa-prod-thumb-img">
+                            <img src="{% static 'images/Book.jpg' %}" alt="image" class="img-fluid" />        
+                            <div class="pa-product-sidebar">
+                                <div class="pa-widget pa-shop-category">
+
+                                    <ul>
+                                        <li class="ligreen"><a href="/">
+                                               صفحه ی اصلی
+                                            </a></li>
+                                        <li class="ligreen"><a href="{% url 'eshop_accounts:user_edit'  %}">
+                                                ویرایش اطلاعات
+                                            </a></li>
+
+                                        <li class="ligreen"><a href="{% url 'eshop_accounts:favorites'  %}">
+                                                لیست مورد علاقه</a></li>
+
+                                        <li class="ligreen"><a href="{% url 'eshop_order:cart'  %}">
+                                                سبد خرید</a></li>
+
+                                        <li class="ligreen"><a href="{% url 'eshop_accounts:user_logout'  %}">
+                                                خروج</a></li>
+
+                                    </ul>
+                                </div>
+
+
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>

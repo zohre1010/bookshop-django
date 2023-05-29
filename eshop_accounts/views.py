@@ -1,88 +1,114 @@
+from itertools import product
+from django.contrib.auth.decorators import login_required
+
+from django.shortcuts import render,redirect
+from .forms import  LoginForm
+from django.http import Http404
+from .forms import EditUserForm
+from django.contrib.auth import login,authenticate,logout
+from eshop_products.models import Product
 from django.shortcuts import render, redirect
-from django.views import View
-from .forms import UserRegistrationForm, VerifyCodeForm, UserLoginForm
-import random
-from utils import send_otp_code
-from .models import OtpCode, User
-from django.contrib import messages
-from django.contrib.auth import login, logout, authenticate
-from django.contrib.auth.mixins import LoginRequiredMixin
+from eshop_accounts.models import User
+from .forms import LoginForm, RegistrationForm      
+
+def signin(request):
+    forms = LoginForm()
+    if request.method == 'POST':
+        forms = LoginForm(request.POST)
+        if forms.is_valid():
+            username = forms.cleaned_data['username']
+            password = forms.cleaned_data['password']
+            user = authenticate(username=username, password=password)
+            if user:
+                login(request, user)
+                return redirect('/')
+    context = {
+        'form': forms
+    }
+    return render(request, 'account/login.html', context)
 
 
-class UserRegisterView(View):
-	form_class = UserRegistrationForm
-	template_name = 'accounts/register.html'
+def signup(request):
+    forms = RegistrationForm()
+    if request.method == 'POST':
+        forms = RegistrationForm(request.POST)
+        if forms.is_valid():
+            username = forms.cleaned_data['username']
+            email = forms.cleaned_data['email']
+            password = forms.cleaned_data['password']
+            confirm_password = forms.cleaned_data['confirm_password']
+            if password == confirm_password:
+                try:
+                    User.objects.create_user(username=username,  email=email,password=password)
+                    return redirect('/login')
+                except:
+                    context = {
+                        'form': forms,
+                        'error': 'This Username Already exists!'
+                    }
+                    return render(request, 'account/register.html', context)
+    context = {
+        'form': forms
+    }
+    return render(request, 'account/register.html', context)
 
-	def get(self, request):
-		register_form = self.form_class
-		return render(request, self.template_name, {'register_form':register_form})
+def signout(request):
+    logout(request)
+    return redirect('/login/')
 
-	def post(self, request):
-		register_form = self.form_class(request.POST)
-		if register_form.is_valid():
-			random_code = random.randint(1000, 9999)
-			send_otp_code(register_form.cleaned_data['phone'], random_code)
-			OtpCode.objects.create(phone_number=register_form.cleaned_data['phone'], code=random_code)
-			request.session['user_registration_info'] = {
-				'phone_number': register_form.cleaned_data['phone'],
-				'email': register_form.cleaned_data['email'],
-				'full_name': register_form.cleaned_data['full_name'],
-				'password': register_form.cleaned_data['password'],
-			}
-			messages.success(request, 'we sent you a code', 'success')
-			return redirect('eshop_accounts:verify_code')
-		return render(request, self.template_name, {'register_form':register_form})
-
-
-class UserRegisterVerifyCodeView(View):
-	form_class = VerifyCodeForm
-
-	def get(self, request):
-		form = self.form_class
-		return render(request, 'accounts/verify.html', {'form':form})
-
-	def post(self, request):
-		user_session = request.session['user_registration_info']
-		code_instance = OtpCode.objects.get(phone_number=user_session['phone_number'])
-		form = self.form_class(request.POST)
-		if form.is_valid():
-			cd = form.cleaned_data
-			if cd['code'] == code_instance.code:
-				User.objects.create_user(user_session['phone_number'], user_session['email'],
-					user_session['full_name'], user_session['password'])
-
-				code_instance.delete()
-				messages.success(request, 'you registered.', 'success')
-				return redirect('eshop_products:product_list')
-			else:
-				messages.error(request, 'this code is wrong', 'danger')
-				return redirect('eshop_accounts:verify_code')
-		return redirect('eshop_products:product_list')
+@login_required(login_url='/login/')
+def user_account_main_page(request):
+    return render(request, 'account/user_account_main.html', {})
 
 
-class UserLogoutView(LoginRequiredMixin, View):
-	def get(self, request):
-		logout(request)
-		messages.success(request, 'you logged out successfully', 'success')
-		return redirect('eshop_accounts:user_login')
+@login_required(login_url='/login/')
+def edit_user_profile(request):
+    user_id = request.user.id
+    user = User.objects.get(id=user_id)
+    if user is None:
+        raise Http404('کاربر مورد نظر یافت نشد')
+
+    edit_user_form = EditUserForm(request.POST or None,
+                                  initial={'first_name': user.first_name, 'last_name': user.last_name})
+
+    if edit_user_form.is_valid():
+        first_name = edit_user_form.cleaned_data.get('first_name')
+        last_name = edit_user_form.cleaned_data.get('last_name')
+
+        user.first_name = first_name
+        user.last_name = last_name
+        user.save()
+
+    context = {'edit_form': edit_user_form}
+
+    return render(request, 'account/edit_account.html', context)
 
 
-class UserLoginView(View):
-	form_class = UserLoginForm
-	template_name = 'accounts/login.html'
+def user_sidebar(request):
+    return render(request, 'account/user_sidebar.html', {})
 
-	def get(self, request):
-		login_form = self.form_class
-		return render(request, self.template_name, {'login_form':login_form})
 
-	def post(self, request):
-		login_form = self.form_class(request.POST)
-		if login_form.is_valid():
-			cd = login_form.cleaned_data
-			user = authenticate(request, phone_number=cd['phone'], password=cd['password'])
-			if user is not None:
-				login(request, user)
-				messages.success(request, 'you logged in successfully', 'info')
-				return redirect('eshop_products:product_list')
-			messages.error(request, 'phone or password is wrong', 'warning')
-		return render(request, self.template_name, {'login_form':login_form})
+
+def favorite(request):
+    new=request.user.fa_user.all()
+    context={'new': new}
+    return render(request,'account/fav.html',context)
+
+
+def favorite_product(request, productId):
+    url = request.META.get('HTTP_REFERER')
+    product = Product.objects.get(id=productId)
+    is_favorite = False
+    if product.favorite.filter(id=request.user.id).exists():
+       product.favorite.remove(request.user)
+    else:
+        product.favorite.add(request.user)
+        is_favorite = True
+    return redirect(url)
+
+
+    
+
+
+
+

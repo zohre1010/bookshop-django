@@ -53,9 +53,18 @@
                                 <span>18%</span>
                             </p> {% endcomment %}
                             <p>
-                                <span>اعطای کل:</span>
-                                <span>{{ cart.get_total_price }}</span>
+                                <span>  صورتحساب </span>
+                                <span>{{ cart.get_total_price }} تومان</span>
                             </p>
+                            <p>
+                                <span>  هزینه ی پست </span>
+                                <span> 35000 تومان</span>
+                            </p>
+                            <p>
+                                <span>اعطای کل:</span>
+                                <span>{{ cart.get_price_book_post}} تومان </span>
+                            </p>
+                            
                             <a href="{% url 'eshop_order:order_create' %}" class="pa-btn">ادامه برای پرداخت</a>
                         </div>
                     </div>
