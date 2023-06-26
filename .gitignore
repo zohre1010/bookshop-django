@@ -1,7 +1,5 @@
 .vscode/
 __pycache__/
-assets/
-static_cdn/
 *.log
 local_settings.py
 db.sqlite3
@@ -14,4 +12,3 @@ venv/
 ENV/
 env.bak/
 venv.bak/
-static_cdn/
